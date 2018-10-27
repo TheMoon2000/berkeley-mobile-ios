@@ -48,3 +48,11 @@ class CampusResourceDataSource: ResourceDataSource
         return campusResource
     }
 }
+
+extension CampusResourceDataSource {
+    enum FailureType {
+        case connectionError
+        case unavailable
+        case customMessage(String)
+    }
+}

@@ -20,4 +20,5 @@ pod 'Crashlytics', '~> 3.9.3'
 pod 'KCFloatingActionButton'
 pod 'ExpandingMenu', '~> 0.3'
 pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :branch => 'master', submodules: true
+pod 'Zip', '~> 0.8.0'
 end

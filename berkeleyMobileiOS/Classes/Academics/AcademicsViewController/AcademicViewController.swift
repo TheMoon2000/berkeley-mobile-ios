@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftyJSON
 
 fileprivate let kColorRed = UIColor.red
 fileprivate let kColorGray = UIColor(white: 189/255.0, alpha: 1)
@@ -58,6 +59,22 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
     var favLib = [Library]()
     var nonFavLib = [Library]()
     
+    let spinner = RPCircularProgress() // Loading animation
+    var occupancies = [String : (load: Int, capacity: Int)]() // Percentages
+    
+    private let refreshControl = UIRefreshControl()
+    
+    let popularityDateFormatter = { () -> DateFormatter in
+        let d = DateFormatter()
+        d.locale = Locale(identifier: "en_US")
+        d.dateFormat = "y-MM-dd"
+        return d
+    }()
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -70,9 +87,13 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                     return print("no didnt work")
                 }
                 
-                self.libraries = nonEmptyList as! [Library]
+                self.libraries = (nonEmptyList as! [Library]).sorted(by: {$0.0.name < $0.1.name}) // Libraries should be sorted in alphabetical order
                 if let t = self.resourceTableView {
-                    t.reloadData()
+                    self.spinner.isHidden = true
+                    t.isHidden = false
+//                    if !self.occupancies.isEmpty {
+                        t.reloadData()
+//                    }
                 }
         }
         
@@ -87,7 +108,11 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 
                 self.campusResources = nonEmptyList as! [CampusResource]
                 if let t = self.resourceTableView {
-                    t.reloadData()
+                    self.spinner.isHidden = true
+                    t.isHidden = false
+//                    if !self.occupancies.isEmpty {
+                        t.reloadData()
+//                    }
                 }
         }
         
@@ -109,10 +134,79 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         
         self.libraries = favLib + nonFavLib
 
-
+        
+        // Setup the fancy animation while libraries are loading
+        spinner.indeterminateDuration = 0.9
+        spinner.trackTintColor = UIColor(white: 0.9, alpha: 1)
+        spinner.progressTintColor = bmThemeColor
+        spinner.indeterminateProgress = 0.35
+        spinner.thicknessRatio = 0.1
+        spinner.roundedCorners = true
+        spinner.enableIndeterminate()
+        
+        view.addSubview(spinner)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Let's apply a few constraints!
+        
+        NSLayoutConstraint.activate([
+            spinner.heightAnchor.constraint(equalToConstant: 55),
+            spinner.widthAnchor.constraint(equalToConstant: 55),
+            spinner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: self.resourceTableView.centerYAnchor)
+        ])
+        
+        // Setup refresh control
+        resourceTableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshOccupancyData(_:)), for: .valueChanged)
+        refreshControl.attributedTitle = NSMutableAttributedString(string: "Fetching Library Data...", attributes: [NSForegroundColorAttributeName: bmThemeColor])
+        refreshControl.isEnabled = false
+        refreshOccupancyData(self)
+    }
+    
+    @objc func refreshOccupancyData(_ sender: Any) {
+        
+        self.occupancies.removeAll()
+        
+        let hourFormatter = DateFormatter()
+        hourFormatter.locale = Locale(identifier: "en_US")
+        hourFormatter.dateFormat = "H" // 24-hour format
+        let currentHour = hourFormatter.string(from: Date())
+        
+        var request = URLRequest(url: URL(string: kSensorDataEndpoint)!)
+        request.httpMethod = "POST"
+        let post_string = "date=\(popularityDateFormatter.string(from: Date()))&hour=\(currentHour)"
+        request.httpBody = post_string.data(using: .utf8)
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if error != nil || data == nil {
+                print(error!)
+                return
+            }
+            let json = JSON(data: data!)
+            if let libs = json.dictionary {
+                self.occupancies = libs.mapValues({ (j) -> (Int, Int) in
+                    (j.array![0].int!, j.array![1].int!)
+                })
+                DispatchQueue.main.async {
+                    self.resourceTableView.isHidden = false
+                }
+            } else {
+            }
+            DispatchQueue.main.async {
+                self.spinner.isHidden = true
+                self.refreshControl.isEnabled = true
+                self.refreshControl.endRefreshing()
+                self.resourceTableView.reloadData()
+            }
+        }
+        task.resume()
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        
+        let nib = UINib(nibName: "HeatMapCell", bundle: Bundle.main)
+        resourceTableView.register(nib, forCellReuseIdentifier: "heat map")
+        
         libButton.titleLabel?.textColor = UIColor(hex: "005581")
         resourceButton.titleLabel?.textColor = UIColor(hex: "005581")
         if isLibrary {
@@ -120,13 +214,14 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         } else {
             libButton.alpha = 0.5
         }
+        if libraries.count == 0 {
+            self.resourceTableView.isHidden = true
+        }
     }
     override func viewDidAppear(_ animated: Bool) {
-        self.resourceTableView.delegate = self
-        self.resourceTableView.dataSource = self
         resourceTableView.reloadData()
         //banner.backgroundColor = UIColor(hex: "1A5679")
-        banner.backgroundColor = UIColor(red: 0, green: 51/255.0, blue: 102/255.0, alpha: 1)
+//        banner.backgroundColor = UIColor(red: 0, green: 51/255.0, blue: 102/255.0, alpha: 1)
         Analytics.logEvent("opened_library_screen", parameters: nil)
     }
     
@@ -143,11 +238,27 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         
         
         if (isLibrary == true) {
+            
+            if indexPath.row == 0 {
+                let cell = resourceTableView.dequeueReusableCell(withIdentifier: "heat map") as! HeatMapCell
+                return cell
+            }
+            
             let cell = resourceTableView.dequeueReusableCell(withIdentifier: "resource") as! ResourceTableViewCell
             // Populate cells with library information
             let library = libraries[indexPath.row]
             cell.resourceName.text = library.name
             cell.resourceImage.load(resource: library)
+            
+            // Load information
+            if !occupancies.isEmpty, let code = libraryCodes[library.name] {
+                cell.resourceLoad.load = occupancies[code]?.load ?? 1
+                cell.resourceLoad.isHidden = false
+                cell.resourceLoad.capacity = occupancies[code]?.capacity ?? 300
+            } else {
+                cell.resourceLoad.isHidden = true
+                cell.resourceLoad.capacity = 500
+            }
             
             var status = "OPEN"
             if library.isOpen == false {
@@ -189,10 +300,22 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-
+    func heightForLabel(title: String) -> CGFloat {
+        let sampleCell = resourceTableView.dequeueReusableCell(withIdentifier: "resource") as! ResourceTableViewCell
+        sampleCell.resourceName.text = title
+        sampleCell.resourceName.sizeToFit()
+//        print(sampleCell.frame, title, sampleCell.resourceName.frame)
+        return sampleCell.resourceName.frame.height
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if (isLibrary == true) {
-            return 80
+            
+            if indexPath.row == 0 {return 50} // Heat map
+            
+            let currentLibrary = libraries[indexPath.row].name
+            let barHeight: CGFloat = libraryCodes.keys.contains(currentLibrary) && !occupancies.isEmpty ? 13 : 0
+            return 62 + barHeight + heightForLabel(title: currentLibrary)
         } else {
             return UITableViewAutomaticDimension
         }
@@ -200,7 +323,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (isLibrary == true) {
-            return libraries.count
+            return libraries.count + 1
         } else {
             return campusResources.count
         }
@@ -208,8 +331,13 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (isLibrary == true) {
-            self.performSegue(withIdentifier: "toLibraryDetail", sender: indexPath.row)
-            self.resourceTableView.deselectRow(at: indexPath, animated: true)
+            if indexPath.row == 0 {
+                self.performSegue(withIdentifier: "toHeatMap", sender: self)
+                self.resourceTableView.deselectRow(at: indexPath, animated: true)
+            } else {
+                self.performSegue(withIdentifier: "toLibraryDetail", sender: indexPath.row)
+                self.resourceTableView.deselectRow(at: indexPath, animated: true)
+            }
         } else {
             self.performSegue(withIdentifier: "toCampusResourceDetail", sender: indexPath.row)
             self.resourceTableView.deselectRow(at: indexPath, animated: true)
@@ -280,6 +408,11 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
             let campusResourceDetailVC = segue.destination as! CampusResourceViewController
             
             campusResourceDetailVC.campusResource = selectedCampRes
+        }
+        if (segue.identifier == "toHeatMap") {
+            let vc = segue.destination as! HeatMapVC
+            vc.libraries = self.libraries
+            vc.occupancies = self.occupancies
         }
 
     }

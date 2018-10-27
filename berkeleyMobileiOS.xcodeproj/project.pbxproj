@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -123,6 +123,15 @@
 		B5F25D251DE8BFC60084A5C7 /* CampusResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F25D241DE8BFC60084A5C7 /* CampusResource.swift */; };
 		B5F25D271DE8BFD50084A5C7 /* CampusResourceDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F25D261DE8BFD50084A5C7 /* CampusResourceDataSource.swift */; };
 		B5F25D2B1DF519890084A5C7 /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F25D2A1DF519890084A5C7 /* LoadingScreen.swift */; };
+		CC07DF92217BE7FD00F0F71B /* Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07DF91217BE7FD00F0F71B /* Custom.swift */; };
+		CC4211F6217DBC6000EE9CFA /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC4211F5217DBC6000EE9CFA /* Zip.framework */; };
+		CC771F95217FD67B00003D99 /* RPCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC771F94217FD67B00003D99 /* RPCircularProgress.swift */; };
+		CC854C352182708F003A264C /* HistoricalLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC854C342182708F003A264C /* HistoricalLoad.swift */; };
+		CCCC19DB21841B23008F636A /* HeatMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC19DA21841B23008F636A /* HeatMapVC.swift */; };
+		CCCC19DE21841CC0008F636A /* HeatMapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC19DC21841CC0008F636A /* HeatMapCell.swift */; };
+		CCCC19DF21841CC0008F636A /* HeatMapCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCCC19DD21841CC0008F636A /* HeatMapCell.xib */; };
+		CCD1E269217FB88100FCE103 /* BarChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD1E267217FB88100FCE103 /* BarChartCell.swift */; };
+		CCD1E26A217FB88100FCE103 /* BarChartCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCD1E268217FB88100FCE103 /* BarChartCell.xib */; };
 		F31E935730F8A79555F3F457 /* Pods_berkeleyMobileiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB034802C6B616B145951320 /* Pods_berkeleyMobileiOS.framework */; };
 		F3CEBE00207D7FF6004C0E95 /* RouteMidTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CEBDFF207D7FF6004C0E95 /* RouteMidTableViewCell.swift */; };
 		F3CEBE02207D8006004C0E95 /* RouteEndTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CEBE01207D8006004C0E95 /* RouteEndTableViewCell.swift */; };
@@ -252,6 +261,15 @@
 		B5F25D241DE8BFC60084A5C7 /* CampusResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampusResource.swift; sourceTree = "<group>"; };
 		B5F25D261DE8BFD50084A5C7 /* CampusResourceDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CampusResourceDataSource.swift; sourceTree = "<group>"; };
 		B5F25D2A1DF519890084A5C7 /* LoadingScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
+		CC07DF91217BE7FD00F0F71B /* Custom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Custom.swift; sourceTree = "<group>"; };
+		CC4211F5217DBC6000EE9CFA /* Zip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Zip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC771F94217FD67B00003D99 /* RPCircularProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCircularProgress.swift; sourceTree = "<group>"; };
+		CC854C342182708F003A264C /* HistoricalLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalLoad.swift; sourceTree = "<group>"; };
+		CCCC19DA21841B23008F636A /* HeatMapVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapVC.swift; sourceTree = "<group>"; };
+		CCCC19DC21841CC0008F636A /* HeatMapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapCell.swift; sourceTree = "<group>"; };
+		CCCC19DD21841CC0008F636A /* HeatMapCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeatMapCell.xib; sourceTree = "<group>"; };
+		CCD1E267217FB88100FCE103 /* BarChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartCell.swift; sourceTree = "<group>"; };
+		CCD1E268217FB88100FCE103 /* BarChartCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarChartCell.xib; sourceTree = "<group>"; };
 		F3CEBDFF207D7FF6004C0E95 /* RouteMidTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteMidTableViewCell.swift; sourceTree = "<group>"; };
 		F3CEBE01207D8006004C0E95 /* RouteEndTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteEndTableViewCell.swift; sourceTree = "<group>"; };
 		F3CEBE03207D8019004C0E95 /* RouteDetailsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteDetailsTableViewCell.swift; sourceTree = "<group>"; };
@@ -263,6 +281,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC4211F6217DBC6000EE9CFA /* Zip.framework in Frameworks */,
 				F31E935730F8A79555F3F457 /* Pods_berkeleyMobileiOS.framework in Frameworks */,
 				41B56A3A1DD06E9500BC3DD2 /* SwiftyJSON.framework in Frameworks */,
 				41B56A381DD06E7D00BC3DD2 /* Alamofire.framework in Frameworks */,
@@ -393,6 +412,8 @@
 				55B1CC6A2022D2C300D5C3D3 /* AcademicsDataSource */,
 				55B1CC682022D2B000D5C3D3 /* AcademicsViewController */,
 				55B1CC672022D2A500D5C3D3 /* AcademicsCells */,
+				CCCC19D921841B04008F636A /* HeatMap */,
+				CCD1E266217FB85000FCE103 /* BarChart */,
 			);
 			path = Academics;
 			sourceTree = "<group>";
@@ -643,6 +664,7 @@
 		BADAC15CCD681293C4FD4336 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CC4211F5217DBC6000EE9CFA /* Zip.framework */,
 				4EF0D9AF1DDBC08C003C18FA /* Pods_berkeleyMobileiOS.framework */,
 				FB034802C6B616B145951320 /* Pods_berkeleyMobileiOS.framework */,
 				41B56A391DD06E9500BC3DD2 /* SwiftyJSON.framework */,
@@ -651,6 +673,28 @@
 				2145738E109E31684887C5EE /* Pods_berkeleyMobileiOS.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CCCC19D921841B04008F636A /* HeatMap */ = {
+			isa = PBXGroup;
+			children = (
+				CCCC19DA21841B23008F636A /* HeatMapVC.swift */,
+				CCCC19DC21841CC0008F636A /* HeatMapCell.swift */,
+				CCCC19DD21841CC0008F636A /* HeatMapCell.xib */,
+			);
+			path = HeatMap;
+			sourceTree = "<group>";
+		};
+		CCD1E266217FB85000FCE103 /* BarChart */ = {
+			isa = PBXGroup;
+			children = (
+				CC07DF91217BE7FD00F0F71B /* Custom.swift */,
+				CCD1E267217FB88100FCE103 /* BarChartCell.swift */,
+				CCD1E268217FB88100FCE103 /* BarChartCell.xib */,
+				CC854C342182708F003A264C /* HistoricalLoad.swift */,
+				CC771F94217FD67B00003D99 /* RPCircularProgress.swift */,
+			);
+			path = BarChart;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -689,14 +733,14 @@
 				TargetAttributes = {
 					41E843891DAB3FE80096C049 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = 4HBETBULVA;
+						DevelopmentTeam = GR353CPP2V;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 41E843851DAB3FE80096C049 /* Build configuration list for PBXProject "berkeleyMobileiOS" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -718,6 +762,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCD1E26A217FB88100FCE103 /* BarChartCell.xib in Resources */,
 				41005D7B1FD12556009D8FB9 /* ls.png in Resources */,
 				4E8E0D8C1E0C08380052CC10 /* Roboto-Bold.ttf in Resources */,
 				4E8E0D901E0C08380052CC10 /* Roboto-LightItalic.ttf in Resources */,
@@ -729,6 +774,7 @@
 				4E8E0D8D1E0C08380052CC10 /* Roboto-BoldItalic.ttf in Resources */,
 				4E8E0D8B1E0C08380052CC10 /* Roboto-BlackItalic.ttf in Resources */,
 				4E8E0D941E0C08380052CC10 /* Roboto-Thin.ttf in Resources */,
+				CCCC19DF21841CC0008F636A /* HeatMapCell.xib in Resources */,
 				4E8E0D931E0C08380052CC10 /* Roboto-Regular.ttf in Resources */,
 				4EEF90471DDBC7D0002CF7E4 /* Dining.storyboard in Resources */,
 				4E8E0D911E0C08380052CC10 /* Roboto-Medium.ttf in Resources */,
@@ -799,6 +845,7 @@
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/Zip/Zip.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -813,6 +860,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Zip.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -850,6 +898,7 @@
 				4ED686AC1EA202C000091793 /* ResourceGroup.swift in Sources */,
 				284A3C851E316F1F00685A01 /* AddressCell.swift in Sources */,
 				41B0B5891E8CD95D00DA9297 /* fullRouteDataSource.swift in Sources */,
+				CC854C352182708F003A264C /* HistoricalLoad.swift in Sources */,
 				B5F25D2B1DF519890084A5C7 /* LoadingScreen.swift in Sources */,
 				4EC865DC1E9C275D00B51E30 /* SearchDataSource.swift in Sources */,
 				41B0B58E1E8CD95D00DA9297 /* nearestStopsDataSource.swift in Sources */,
@@ -876,6 +925,7 @@
 				4E4E7D0A1E5A6ACA00A45586 /* ResourceDetailProvider.swift in Sources */,
 				B5F25D211DE2B6DF0084A5C7 /* Library.swift in Sources */,
 				B5F25D251DE8BFC60084A5C7 /* CampusResource.swift in Sources */,
+				CC771F95217FD67B00003D99 /* RPCircularProgress.swift in Sources */,
 				4E4EC1431E504710000C63ED /* ResourceDataSource.swift in Sources */,
 				35E4945F20296C9000467C77 /* CafeDataSource.swift in Sources */,
 				55C4474B206B3EE600409499 /* SpecificGymViewController.swift in Sources */,
@@ -889,6 +939,7 @@
 				F3CEBE00207D7FF6004C0E95 /* RouteMidTableViewCell.swift in Sources */,
 				4E4E7D131E5CBD6F00A45586 /* ListMenuController.swift in Sources */,
 				41017CFA1FB55BF4002D12BB /* livebusDataSource.swift in Sources */,
+				CC07DF92217BE7FD00F0F71B /* Custom.swift in Sources */,
 				4E143C0C1E5489B100B77D08 /* InfoPanel.swift in Sources */,
 				4EE89F261DDBEF9F00AC4EF7 /* UIImageView+Extension.swift in Sources */,
 				41B0B5961E8CDC6200DA9297 /* RouteViewController.swift in Sources */,
@@ -900,6 +951,7 @@
 				5552A68F2048C2F100F27AED /* AcademicViewController.swift in Sources */,
 				41B0B58F1E8CD95D00DA9297 /* Route.swift in Sources */,
 				F3CEBE02207D8006004C0E95 /* RouteEndTableViewCell.swift in Sources */,
+				CCD1E269217FB88100FCE103 /* BarChartCell.swift in Sources */,
 				4E4EC1421E50470F000C63ED /* Resource.swift in Sources */,
 				55D9A4BB2084220F0040110C /* WeeklyTimesTableViewCell.swift in Sources */,
 				4E505D461DD05A65004AC6C9 /* LaunchViewController.swift in Sources */,
@@ -912,11 +964,13 @@
 				55D9A4BD208448DD0040110C /* UIImageExtension.swift in Sources */,
 				4E62CFE71DD87CFB00B19722 /* UINavigationBar+Extension.swift in Sources */,
 				55026D561F9152E6005D9576 /* GymInformationTableViewCell.swift in Sources */,
+				CCCC19DB21841B23008F636A /* HeatMapVC.swift in Sources */,
 				55EC872F1FA2DC1E00C71C09 /* LibraryDetailCell.swift in Sources */,
 				92DD7191206072BD00B73233 /* RouteTitleTableViewCell.swift in Sources */,
 				4E4D30AD1E56F2D900E418B8 /* FadeTitleToolbar.swift in Sources */,
 				4E4EC1471E504710000C63ED /* ResourceTile.swift in Sources */,
 				4ED0D35F1DDCE9FA00956F9E /* Protocols.swift in Sources */,
+				CCCC19DE21841CC0008F636A /* HeatMapCell.swift in Sources */,
 				41B0B5871E8CD95D00DA9297 /* BearTransitNavigationController.swift in Sources */,
 				4E64B56E1DD134EB00DA5E73 /* Date+Extension.swift in Sources */,
 				555D40E72051F06300EA1E1C /* GymViewController.swift in Sources */,
@@ -1063,7 +1117,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 4HBETBULVA;
+				DEVELOPMENT_TEAM = GR353CPP2V;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = berkeleyMobileiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1072,7 +1126,7 @@
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.asuc.ASUC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.themoon2000;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1090,7 +1144,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4HBETBULVA;
+				DEVELOPMENT_TEAM = GR353CPP2V;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
@@ -1102,7 +1156,7 @@
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.asuc.ASUC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.themoon2000;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

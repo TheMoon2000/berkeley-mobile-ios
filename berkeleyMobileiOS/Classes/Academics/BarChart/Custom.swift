@@ -7,68 +7,6 @@
 //
 
 import UIKit
-/*
-struct Library {
-    var name = ""
-    var netflow: [String : [(inflow: Int, outflow: Int)]] = [:] // All data
-    var openTime = 0
-    var closeTime = 0
-    var capacity = 1
-    
-    let genericDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "y-MM-dd"
-        return formatter
-    }()
-    
-    let currentHour: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "h"
-        return formatter
-    }()
-    
-    var currentLoad: Int {
-//        let today = genericDateFormatter.string(from: Date())
-//        let today = "2017-08-25"
-//        if let todaysFlow = netflow[today]?.last? {
-//            let firstValley = valleyHours(date: today)[0]
-//            if Int(currentHour.string(from: Date()))! < firstValley
-//
-//        }
-        return capacity / 3
-    }
-    
-    init(name: String, openTime: Int, closeTime: Int, capacity: Int, netflow: [String: [(Int, Int)]]) {
-        self.name = name
-        self.openTime = openTime
-        self.closeTime = closeTime
-        self.capacity = capacity
-        self.netflow = netflow
-    }
-    
-    func valleyHours(date: String) -> [Int] {
-        if let flow = netflow[date] {
-            var offset = 0
-            var maxoffset = 0
-            var hours = [Int]() // 12 AM by default
-            for i in 0..<flow.count {
-                offset += offset + flow[i].inflow - flow[i].outflow
-                if offset == maxoffset {
-                    hours.append(i)
-                } else if offset < maxoffset { // New lowest record
-                    hours = [i]
-                    maxoffset = offset
-                }
-            }
-            return hours
-        } else {
-            return []
-        }
-    }
-    
-}*/
 
 class BarView: UIView {
     
@@ -115,11 +53,12 @@ class BarChart: UIView {
     var titlePadding: (top: CGFloat, bottom: CGFloat) = (10, 15) // Top and bottom padding
     let titleAlignment = TitleAlignment.left
     var frameEdgeColor = UIColor(white: 0.7, alpha: 1) // The frame color
-    var chartTheme = UIColor(red: 0.5, green: 0.5, blue: 0.7, alpha: 1) // Bar color
+    var chartTheme = UIColor(hue: 0.558, saturation: 0.79, brightness: 0.98, alpha: 1.0) // Bar color
     var barSpacing: CGFloat = 0.1 // Spacing between bars as proportion of bar width
     var tickLabelSpacing: CGFloat = 2 // Spacing distance to y-axis
-    var sideSpacing: (left: CGFloat, right: CGFloat) = (5, 2) // Spacing between bars and axis
+    var sideSpacing: (left: CGFloat, right: CGFloat) = (6, 2) // Spacing between bars and axis
     var averageStyle = AverageStyle.none
+    var gradient = false
     //    var tickStyle = TickStyle.none
     var maxCapacity: CGFloat = 1
     let label = UILabel()
@@ -157,6 +96,19 @@ class BarChart: UIView {
         }
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        backgroundRefresh()
+    }
+    
+    func backgroundRefresh() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
+            self.setNeedsDisplay()
+            self.backgroundRefresh()
+        }
+    }
+    
     enum TitleAlignment {
         case center
         case left
@@ -170,31 +122,35 @@ class BarChart: UIView {
     
     
     var tickPadding: CGFloat {
-        return 28
+        return 30
+    }
+    
+    var titleFormat = "Load distribution - %" {
+        didSet {
+            label.text = titleFormat.replacingOccurrences(of: "%", with: dateString)
+            label.font = UIFont.systemFont(ofSize: 16)
+            
+            let attrString = NSMutableAttributedString(string: label.text!)
+            attrString.addAttribute(NSFontAttributeName,
+                                    value: UIFont.systemFont(ofSize: 16),
+                                    range: NSRange(location: 0,
+                                                         length: label.text!.lengthOfBytes(using: .utf8)))
+            if label.text!.contains(dateString) {
+                attrString.addAttributes(
+                    [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 16),
+                     NSForegroundColorAttributeName: UIColor(red: 0.2, green: 0.25, blue: 0.7, alpha: 1)],
+                    range: NSRange(location: label.text!.range(of: dateString)!.lowerBound.encodedOffset, length: dateString.lengthOfBytes(using: .utf8)))
+            }
+            label.attributedText = attrString
+            labelInit(label: label)
+        }
     }
     
     var titleHeight: CGFloat {
         return titlePadding.top + titlePadding.bottom + label.frame.height
     }
     
-    var dateString: String = "" {
-        didSet {
-            label.text = "Load distribution - \(dateString)"
-            label.font = UIFont.systemFont(ofSize: 16)
-            
-            let attributedString = NSMutableAttributedString(string: label.text!)
-            attributedString.addAttribute(NSFontAttributeName,
-                                          value: UIFont.systemFont(ofSize: 16),
-                                          range: NSRange(location: 0,
-                                                         length: label.text!.lengthOfBytes(using: .utf8)))
-            attributedString.addAttributes([NSFontAttributeName: UIFont.boldSystemFont(ofSize: 16),
-                                            NSForegroundColorAttributeName: UIColor(red: 0.2, green: 0.25, blue: 0.7, alpha: 1)],
-                                           range: NSRange(location: label.text!.range(of: dateString)!.lowerBound.encodedOffset,
-                                                          length: dateString.lengthOfBytes(using: .utf8)))
-            label.attributedText = attributedString
-            labelInit(label: label)
-        }
-    }
+    var dateString: String = ""
     
     var averageLoad: Double {
         var total = 0.0
@@ -220,13 +176,14 @@ class BarChart: UIView {
         default:
             break
         }
-        
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
-            //            label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            label.leftAnchor.constraint(equalTo: self.leftAnchor, constant: tickPadding),
-            label.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -2)
-            ])
+        if label.constraints.count == 0 {
+            NSLayoutConstraint.activate([
+                label.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+                //            label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+                label.leftAnchor.constraint(equalTo: self.leftAnchor, constant: tickPadding / 2),
+                label.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -2)
+                ])
+        }
     }
     
     // Placing tick labels
@@ -245,9 +202,17 @@ class BarChart: UIView {
             tickLabel.leftAnchor.constraint(equalTo: self.leftAnchor),
             tickLabel.centerYAnchor.constraint(equalTo: self.topAnchor, constant: centerY)
             ])
+        labels.append(tickLabel)
     }
     
+    var labels = [UILabel]()
+    
     override func draw(_ rect: CGRect) {
+        
+        labels.forEach { (label) in
+            label.removeFromSuperview()
+        }
+        labels.removeAll()
         
         let graphFrame = CGRect(x: 1 + tickPadding,
                                 y: 1 + titleHeight,
@@ -277,6 +242,13 @@ class BarChart: UIView {
         
         if data.count == 0 {return}
         
+        let futureColor = chartTheme.withAlphaComponent(0.5)
+        
+        let hourFormatter = DateFormatter()
+        hourFormatter.dateFormat = "H"
+        hourFormatter.locale = Locale(identifier: "en_US")
+        let currentHour = Int(hourFormatter.string(from: Date()))!
+        
         let barWidth = (graphFrame.width - sideSpacing.left - sideSpacing.right) / (1 + (1 + barSpacing) * CGFloat(data.count - 1))
         let gap = (graphFrame.width - sideSpacing.left - sideSpacing.right - CGFloat(data.count) * barWidth) / CGFloat(data.count - 1)
         let combinedWidth = gap + barWidth
@@ -284,25 +256,57 @@ class BarChart: UIView {
         let barMaxPercentage = barMaxValue / maxCapacity
         for i in 0..<data.count {
             let barHeight = graphFrame.height * CGFloat(data[i]) / barMaxValue
-            let boundaryRect = CGRect(x: graphFrame.minX + sideSpacing.left + CGFloat(i) * combinedWidth,
-                                      y: graphFrame.maxY - barHeight,
-                                      width: barWidth,
-                                      height: barHeight)
-            let path = UIBezierPath(rect: boundaryRect)
-            chartTheme.setFill()
-            path.fill()
+            if i == currentHour && gradient {
+                
+                // Split the rectangle into two parts and fill separatedly
+                let minFormatter = DateFormatter()
+                minFormatter.locale = Locale(identifier: "en_US")
+                minFormatter.dateFormat = "m"
+                let minutesPassed = Int(minFormatter.string(from: Date()))!
+                let rect1 = CGRect(x: graphFrame.minX + sideSpacing.left + CGFloat(i) * combinedWidth,
+                                   y: graphFrame.maxY - barHeight,
+                                   width: barWidth * CGFloat(minutesPassed) / 60,
+                                   height: barHeight)
+                let rect2 = CGRect(x: rect1.maxX,
+                                   y: graphFrame.maxY - barHeight,
+                                   width: barWidth * CGFloat(60 - minutesPassed) / 60,
+                                   height: barHeight)
+                
+                let path1 = UIBezierPath(rect: rect1)
+                chartTheme.setFill()
+                path1.fill()
+                
+                let path2 = UIBezierPath(rect: rect2)
+                futureColor.setFill()
+                path2.fill()
+            } else {
+                let boundaryRect = CGRect(x: graphFrame.minX + sideSpacing.left + CGFloat(i) * combinedWidth,
+                                          y: graphFrame.maxY - barHeight,
+                                          width: barWidth,
+                                          height: barHeight)
+                let path = UIBezierPath(rect: boundaryRect)
+                // The i-th value is the i to i+1 hour interval
+
+                if i < currentHour || !gradient {
+                    chartTheme.setFill()
+                } else {
+                    futureColor.setFill()
+                }
+                path.fill()
+            }
         }
         
         // Tick style
         
         let dataToPixelRatio: CGFloat = graphFrame.height / barMaxPercentage
-        print("maxPercentage: \(barMaxPercentage)")
         
         var interval: CGFloat = 0.02
         var ticksCount = 0
         
         // Automatically pick the scale for ticks
-        if barMaxPercentage >= 0.8 {
+        if barMaxPercentage > 1.0 {
+            interval = 0.25
+        } else if barMaxPercentage >= 0.8 {
             interval = 0.2
         } else if barMaxPercentage >= 0.65 {
             interval = 0.15
@@ -311,7 +315,6 @@ class BarChart: UIView {
         } else if barMaxPercentage >= 0.15 {
             interval = 0.05
         }
-        print("interval: \(100 * interval)%")
         
         // Place tickmarks at the desired locations
         
@@ -322,10 +325,10 @@ class BarChart: UIView {
             let y = (top + interval * CGFloat(ticksCount))
             let verticalLeft = CGPoint(x: tickPadding + 1,
                                        y: CGFloat(y) * dataToPixelRatio + graphFrame.minY)
-            if ticksCount > 0 || CGFloat(y) * dataToPixelRatio > 6 {
+            if ticksCount > 0 || CGFloat(y) * dataToPixelRatio > 10 {
                 let tickLine = UIBezierPath()
                 tickLine.move(to: verticalLeft)
-                tickLine.addLine(to: CGPoint(x: tickPadding + 7,
+                tickLine.addLine(to: CGPoint(x: tickPadding + 6,
                                              y: verticalLeft.y))
                 frameEdgeColor.setStroke()
                 tickLine.lineWidth = 1
@@ -343,7 +346,7 @@ class BarChart: UIView {
         if self.frameStyle == .bottom(1) {
             let tickLine = UIBezierPath()
             tickLine.move(to: CGPoint(x: graphFrame.minX, y: graphFrame.minY + 0.5))
-            tickLine.addLine(to: CGPoint(x: graphFrame.minX + 8,
+            tickLine.addLine(to: CGPoint(x: graphFrame.minX + 7,
                                          y: graphFrame.minY + 0.5))
             tickLine.lineWidth = 1
             frameEdgeColor.setStroke()
@@ -358,3 +361,26 @@ class BarChart: UIView {
     
 }
 
+let libraryCodes = [
+    "Anthropology Library": "ANTH",
+    "Art History/Classics Library": "AHC",
+    "Bancroft Library/University Archives": "BANC",
+    "Bioscience & Natural Resources Library": "BIOS",
+    "Chemistry and Chemical Engineering Library": "CHEM",
+    "Doe Library": "DOE",
+    "East Asian Library": "EAL",
+    "Earth Sciences & Map Library": "EART",
+    "Engineering Library": "ENGI",
+    "Environmental Design Library": "ENVI",
+    "Graduate Services": "GRDS",
+    "Main (Gardner) Stacks": "DOE-STACKS",
+    "Mathematics Statistics Library": "MATH",
+    "Moffitt Library": "MOFF",
+    "Moffitt Library 4th Floor": "MOFF-4",
+    "Morrison Library": "MORR",
+    "Music Library": "MUSI",
+    "Optometry and Health Sciences Library": "OPTO",
+    "Physics-Astronomy Library": "PHYS",
+    "Public Health Library": "PUBL",
+    "Social Research Library": "SOCR",
+]

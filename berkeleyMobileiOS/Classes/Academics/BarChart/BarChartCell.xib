@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="barchart" rowHeight="270" id="KGk-i7-Jjw" customClass="BarChartCell" customModule="berkeleyMobileiOS" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="270"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="269.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bnu-uB-aO9" customClass="BarChart" customModule="berkeleyMobileiOS" customModuleProvider="target">
+                        <rect key="frame" x="16" y="11" width="343" height="216.5"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dl4-Ch-PaF" customClass="RPCircularProgress" customModule="berkeleyMobileiOS" customModuleProvider="target">
+                        <rect key="frame" x="162.5" y="110" width="50" height="50"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="50" id="0E6-WZ-yIi"/>
+                            <constraint firstAttribute="width" constant="50" id="CH2-gG-4Qh"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="trackTintColor">
+                                <color key="value" cocoaTouchSystemColor="lightTextColor"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="progressTintColor">
+                                <color key="value" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="roundedCorners" value="YES"/>
+                            <userDefinedRuntimeAttribute type="number" keyPath="thicknessRatio">
+                                <real key="value" value="0.10000000000000001"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="clockwiseProgress" value="YES"/>
+                            <userDefinedRuntimeAttribute type="color" keyPath="innerTintColor">
+                                <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unfortunately, sensor data is not yet available for this library." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3se-vQ-hAT">
+                        <rect key="frame" x="70" y="116" width="267" height="38.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <color key="textColor" red="0.37274982931765649" green="0.37389994548908984" blue="0.37735029400338982" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="connection-error" translatesAutoresizingMaskIntoConstraints="NO" id="6i5-SO-aPh">
+                        <rect key="frame" x="34" y="121" width="28" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="28" id="Ah8-Cc-oJb"/>
+                            <constraint firstAttribute="width" constant="28" id="Qla-cF-QGR"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We've retrieved the data for the most recent date." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jtE-Tp-AAP">
+                        <rect key="frame" x="16" y="239" width="343" height="15"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="Bnu-uB-aO9" secondAttribute="bottom" constant="42" id="3Z8-PJ-cff"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="jtE-Tp-AAP" secondAttribute="bottom" constant="5" id="U2r-C5-z1x"/>
+                    <constraint firstItem="dl4-Ch-PaF" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Z5x-Rm-U5M"/>
+                    <constraint firstItem="jtE-Tp-AAP" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="axU-Pt-VyW"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="3se-vQ-hAT" secondAttribute="trailing" constant="12" id="csK-el-ybL"/>
+                    <constraint firstItem="jtE-Tp-AAP" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="gN5-eg-C29"/>
+                    <constraint firstItem="6i5-SO-aPh" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="is3-tB-TyN"/>
+                    <constraint firstItem="Bnu-uB-aO9" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="jcy-Uh-maO"/>
+                    <constraint firstItem="Bnu-uB-aO9" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="qCv-S0-YEm"/>
+                    <constraint firstItem="dl4-Ch-PaF" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="qrm-uz-uT2"/>
+                    <constraint firstItem="Bnu-uB-aO9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="sem-Lh-S6X"/>
+                    <constraint firstItem="3se-vQ-hAT" firstAttribute="leading" secondItem="6i5-SO-aPh" secondAttribute="trailing" constant="8" id="tSt-ue-WmJ"/>
+                </constraints>
+            </tableViewCellContentView>
+            <constraints>
+                <constraint firstItem="3se-vQ-hAT" firstAttribute="centerY" secondItem="njF-e1-oar" secondAttribute="centerY" id="F5c-py-wP6"/>
+                <constraint firstItem="6i5-SO-aPh" firstAttribute="centerY" secondItem="njF-e1-oar" secondAttribute="centerY" id="S6V-5U-aZK"/>
+                <constraint firstItem="3se-vQ-hAT" firstAttribute="centerX" secondItem="njF-e1-oar" secondAttribute="centerX" constant="16" id="bWb-94-hWb"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="barChart" destination="Bnu-uB-aO9" id="zCQ-o5-wdu"/>
+                <outlet property="caption" destination="jtE-Tp-AAP" id="UqK-0y-77R"/>
+                <outlet property="errorImage" destination="6i5-SO-aPh" id="Yqv-VB-jP2"/>
+                <outlet property="errorMessage" destination="3se-vQ-hAT" id="vnL-yu-oMx"/>
+                <outlet property="loading" destination="dl4-Ch-PaF" id="3g8-li-b3q"/>
+            </connections>
+            <point key="canvasLocation" x="138.40000000000001" y="212.29385307346328"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="connection-error" width="96" height="96"/>
+    </resources>
+</document>

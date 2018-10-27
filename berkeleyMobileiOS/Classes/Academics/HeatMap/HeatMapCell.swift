@@ -1,23 +1,17 @@
 //
-//  ResourceTableViewCell.swift
+//  HeatMapCell.swift
 //  berkeleyMobileiOS
 //
-//  Created by Marisa Wong on 3/2/18.
+//  Created by Jia Rui Shan on 2018/10/26.
 //  Copyright © 2018 org.berkeleyMobile. All rights reserved.
 //
 
 import UIKit
 
-class ResourceTableViewCell: UITableViewCell {
+class HeatMapCell: UITableViewCell {
+    
+    @IBOutlet weak var title: UILabel!
 
-    @IBOutlet weak var resourceImage: UIImageView!
-    
-    @IBOutlet weak var resourceName: UILabel!
-    @IBOutlet weak var resourceStatus: UILabel!
-    @IBOutlet weak var resourceLoad: BarView!
-    
-    @IBOutlet weak var resourceHours: UILabel!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -28,5 +22,5 @@ class ResourceTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
 }

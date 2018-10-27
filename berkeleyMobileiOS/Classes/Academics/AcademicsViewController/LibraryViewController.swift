@@ -12,6 +12,8 @@ import Firebase
 fileprivate let kColorGreen = UIColor(red: 16/255.0, green: 161/255.0, blue: 0, alpha:1)
 fileprivate let kColorRed = UIColor.red
 
+let kSensorDataEndpoint = sensorDataSource + "/data.php"
+
 class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate {
     
     var library: Library!
@@ -21,6 +23,22 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
     var weeklyTimes = [String]()
     var daysOfWeek = [String]()
     var expandRow: Bool!
+    var distribution: (Date, [Int])?
+    var failureType: CampusResourceDataSource.FailureType?
+    
+    let popularityDateFormatter = { () -> DateFormatter in
+        let d = DateFormatter()
+        d.locale = Locale(identifier: "en_US")
+        d.dateFormat = "y-MM-dd"
+        return d
+    }()
+    
+    let weekFormatter = { () -> DateFormatter in
+        let d = DateFormatter()
+        d.locale = Locale(identifier: "en_US")
+        d.dateFormat = "EEEE"
+        return d
+    }()
     
     @IBOutlet weak var libTitle: UILabel!
     @IBOutlet weak var libraryImage: UIImageView!
@@ -110,10 +128,82 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
         
             currDate = nextDate!
         }
+        
+        // Added table view cell for the library load distribution
+        
+        let chartNib = UINib(nibName: "BarChartCell", bundle: Bundle.main)
+        libTableView.register(chartNib, forCellReuseIdentifier: "barchart")
+        
+        // Find the last weekday that matches the current weekday
+        
+        var dateToLookup = Date()
+        let today = weekFormatter.string(from: Date())
+        
+        while weekFormatter.string(from: dateToLookup) != today {
+            dateToLookup.addTimeInterval(-24 * 3600) // Back by one day
+        }
+        
+        let lookupDateName = popularityDateFormatter.string(from: dateToLookup)
+        
+//        library.name
+        if let lookupName = libraryCodes[library.name] {
+            self.distribution = nil
+            loadDistribution(lookupName, lookupDateName) { (date, list) in
+                self.distribution = (date, list)
+                self.updateBarChartCell()
+            }
+        } else {
+            self.failureType = CampusResourceDataSource.FailureType.unavailable
+            self.updateBarChartCell()
+        }
     
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+    }
+    
+    func updateBarChartCell() {
+        
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.libTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .fade)
+        }
+    }
+    
+    // Return an array with the load distribution for a given date
+    // Date string should have format of YYYY-MM-DD
+    func loadDistribution(_ library: String, _ date: String, handler: @escaping (Date, [Int]) -> Void) {
+        
+        // Update the appearance of the barchart cell
+        distribution = nil; failureType = nil
+        
+        var request = URLRequest(url: URL(string: kSensorDataEndpoint)!)
+        request.httpMethod = "POST"
+        let post_string = "date=\(date)&library=\(library)"
+        request.httpBody = post_string.data(using: .utf8)
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                print(error!)
+                self.failureType = CampusResourceDataSource.FailureType.connectionError
+                self.updateBarChartCell()
+                return
+            } else if let dist = String(data: data!, encoding: .utf8) {
+                if dist == "failed to read" {
+//                    self.failureType = CampusResourceDataSource.FailureType.unavailable
+//                    self.updateBarChartCell()
+                    let newDate = self.popularityDateFormatter.date(from: date)!.addingTimeInterval(-7 * 24 * 3600)
+                    self.loadDistribution(library,
+                                          self.popularityDateFormatter.string(from: newDate), handler: handler)
+                } else {
+                    let array = dist.components(separatedBy: " ").map {Int($0) ?? 0}
+                    handler(self.popularityDateFormatter.date(from: date)!, array)
+                    self.failureType = nil
+                }
+            } else {
+                self.failureType = CampusResourceDataSource.FailureType.customMessage("UNEXPECTED: no data was loaded :(")
+                return
+            }
+        }
+        task.resume()
     }
 
     override func didReceiveMemoryWarning() {
@@ -235,7 +325,7 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
 extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -245,7 +335,9 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if expandRow == true && indexPath.row == 0  {
             return 220
-        } else if (indexPath.row == 3) {
+        } else if indexPath.row == 3 {
+            return 250
+        } else if (indexPath.row == 4) {
             return 400
         } else {
             return UITableViewAutomaticDimension
@@ -288,8 +380,10 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
         marker.title = library?.name
         marker.map = campResMap
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
+        switch indexPath.row {
+        case 0:
             let cell = libTableView.dequeueReusableCell(withIdentifier: "dropdown", for: indexPath) as! WeeklyTimesTableViewCell
             cell.icon.image = iconImages[indexPath.row]
             if self.library.isOpen {
@@ -308,11 +402,69 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
                 cell.expandButton.setBackgroundImage(#imageLiteral(resourceName: "expand"), for: .normal)
             }
             return cell
-        } else if (indexPath.row == 3) {
+        case 3:
+            let cell = libTableView.dequeueReusableCell(withIdentifier: "barchart") as! BarChartCell
+            
+            // Loading animation
+            if self.distribution == nil && failureType == nil {
+                
+                // Adjust the content of the view
+                cell.loading.isHidden = false
+                cell.barChart.isHidden = true
+                cell.errorImage.isHidden = true
+                cell.errorMessage.isHidden = true
+                cell.caption.text = ""
+                
+                cell.loading.indeterminateDuration = 0.9 // Period
+                cell.loading.trackTintColor = UIColor(white: 0.9, alpha: 1)
+                cell.loading.progressTintColor = bmThemeColor
+                cell.loading.indeterminateProgress = 0.35
+                cell.loading.enableIndeterminate()
+            } else if let dist = self.distribution {
+                
+                // Adjust the content of the view
+                cell.barChart.isHidden = false
+                cell.loading.isHidden = true
+                cell.errorImage.isHidden = true
+                cell.errorMessage.isHidden = true
+                
+                cell.barChart.titleFormat = "Predicted occupancy distribution for today:"
+                cell.barChart.frameStyle = .bottom(1)
+                cell.barChart.backgroundColor = UIColor.white
+                cell.barChart.chartTheme = bmThemeColor
+                cell.barChart.maxCapacity = 300 // Temporary solution
+                cell.barChart.data = dist.1
+                cell.barChart.gradient = true
+                let dayOfWeek = weekFormatter.string(from: dist.0)
+                cell.caption.text = "We've fetched the data for the most recent \(dayOfWeek)."
+            } else {
+                
+                // Adjust the content of the view
+                cell.errorImage.isHidden = false
+                cell.errorMessage.isHidden = false
+                cell.barChart.isHidden = true
+                cell.loading.isHidden = true
+                cell.caption.text = ""
+                
+                switch failureType! {
+                case .connectionError:
+                    cell.errorImage.image = UIImage(named: "connection-error")
+                    cell.errorMessage.text = "Sorry, we couldn't connect to our server. Tap to retry!"
+                case .unavailable:
+                    cell.errorImage.image = UIImage(named: "unavailable")
+                    cell.errorMessage.text = "Sorry, sensor data is not yet available for this building!"
+                case .customMessage(let message):
+                    cell.errorImage.image = UIImage(named: "connection-error")
+                    cell.errorMessage.text = message
+                }
+            }
+            
+            return cell
+        case 4:
             let campResInfoCell = tableView.dequeueReusableCell(withIdentifier: "librarymapTable", for: indexPath) as! LibraryMapTableViewCell
             setUpMap(campResInfoCell.mapView)
             return campResInfoCell
-        } else {
+        default:
             let libraryInfoCell = libTableView.dequeueReusableCell(withIdentifier: "libraryCell", for: indexPath) as! LibraryDetailCell
             
             libraryInfoCell.libraryIconImage.image = iconImages[indexPath.row]
@@ -323,10 +475,31 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
     }
         
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
+        switch indexPath.row {
+        case 0:
             let cell = tableView.cellForRow(at: indexPath) as! WeeklyTimesTableViewCell
             expandRow = !expandRow
             tableView.reloadData()
+        case 3:
+            if failureType != nil {
+                tableView.deselectRow(at: indexPath, animated: true)
+                loadDistribution(libraryCodes[library.name]!, popularityDateFormatter.string(from: Date())) { (date, list) in
+                    self.distribution = (date, list)
+                    self.updateBarChartCell()
+                }
+            } else if distribution != nil {
+                self.performSegue(withIdentifier: "historical load", sender: self)
+            }
+            tableView.deselectRow(at: indexPath, animated: true)
+        default:
+            break
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? HistoricalLoad {
+            vc.library = self.library
+            vc.mostRecentDate = self.distribution?.0
         }
     }
     

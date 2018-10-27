@@ -75,9 +75,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         return UIStatusBarStyle.lightContent
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    func refreshLibraries() {
         Library.dataSource?.fetchResources
             { list in
                 
@@ -91,9 +89,9 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 if let t = self.resourceTableView {
                     self.spinner.isHidden = true
                     t.isHidden = false
-//                    if !self.occupancies.isEmpty {
+                    if self.occupancies.count > 0 {
                         t.reloadData()
-//                    }
+                    }
                 }
         }
         
@@ -110,11 +108,17 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 if let t = self.resourceTableView {
                     self.spinner.isHidden = true
                     t.isHidden = false
-//                    if !self.occupancies.isEmpty {
+                    if self.occupancies.count > 0 {
                         t.reloadData()
-//                    }
+                    }
                 }
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        refreshLibraries()
         
         // Check to see if user setting for favoriting exists
         let defaults = UserDefaults.standard
@@ -167,6 +171,8 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
     @objc func refreshOccupancyData(_ sender: Any) {
         
         self.occupancies.removeAll()
+        
+        refreshLibraries()
         
         let hourFormatter = DateFormatter()
         hourFormatter.locale = Locale(identifier: "en_US")
@@ -236,7 +242,8 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
+        let row = indexPath.row - 1
+
         if (isLibrary == true) {
             
             if indexPath.row == 0 {
@@ -246,7 +253,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
             
             let cell = resourceTableView.dequeueReusableCell(withIdentifier: "resource") as! ResourceTableViewCell
             // Populate cells with library information
-            let library = libraries[indexPath.row]
+            let library = libraries[row]
             cell.resourceName.text = library.name
             cell.resourceImage.load(resource: library)
             
@@ -272,7 +279,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 cell.resourceStatus.textColor = UIColor(hex: "FF2828")
             }
             
-            let hours = getLibraryHours(library: library)
+            let hours = AcademicViewController.getLibraryHours(library: library)
             cell.resourceHours.text = hours
             cell.resourceHours.textColor = UIColor(hex: "585858")
             
@@ -281,7 +288,6 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 if (splitStr[0] == splitStr[1]) {
                     cell.resourceStatus.textColor = UIColor(hex: "18A408")
                     cell.resourceStatus.text = "OPEN"
-                    cell.resourceStatus.textColor = UIColor(hex:"18A408")
                 }
             }
             
@@ -313,7 +319,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
             
             if indexPath.row == 0 {return 50} // Heat map
             
-            let currentLibrary = libraries[indexPath.row].name
+            let currentLibrary = libraries[indexPath.row - 1].name
             let barHeight: CGFloat = libraryCodes.keys.contains(currentLibrary) && !occupancies.isEmpty ? 13 : 0
             return 62 + barHeight + heightForLabel(title: currentLibrary)
         } else {
@@ -363,7 +369,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         return status
     }
     
-    func getLibraryHours(library: Library) -> String{
+    public static func getLibraryHours(library: Library) -> String{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
         dateFormatter.amSymbol = "AM"

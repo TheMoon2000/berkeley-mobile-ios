@@ -130,6 +130,7 @@
 		CCCC19DB21841B23008F636A /* HeatMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC19DA21841B23008F636A /* HeatMapVC.swift */; };
 		CCCC19DE21841CC0008F636A /* HeatMapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC19DC21841CC0008F636A /* HeatMapCell.swift */; };
 		CCCC19DF21841CC0008F636A /* HeatMapCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCCC19DD21841CC0008F636A /* HeatMapCell.xib */; };
+		CCCC19E121845549008F636A /* HeatMapFiltersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC19E021845549008F636A /* HeatMapFiltersVC.swift */; };
 		CCD1E269217FB88100FCE103 /* BarChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD1E267217FB88100FCE103 /* BarChartCell.swift */; };
 		CCD1E26A217FB88100FCE103 /* BarChartCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCD1E268217FB88100FCE103 /* BarChartCell.xib */; };
 		F31E935730F8A79555F3F457 /* Pods_berkeleyMobileiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB034802C6B616B145951320 /* Pods_berkeleyMobileiOS.framework */; };
@@ -268,6 +269,7 @@
 		CCCC19DA21841B23008F636A /* HeatMapVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapVC.swift; sourceTree = "<group>"; };
 		CCCC19DC21841CC0008F636A /* HeatMapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapCell.swift; sourceTree = "<group>"; };
 		CCCC19DD21841CC0008F636A /* HeatMapCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeatMapCell.xib; sourceTree = "<group>"; };
+		CCCC19E021845549008F636A /* HeatMapFiltersVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapFiltersVC.swift; sourceTree = "<group>"; };
 		CCD1E267217FB88100FCE103 /* BarChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartCell.swift; sourceTree = "<group>"; };
 		CCD1E268217FB88100FCE103 /* BarChartCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarChartCell.xib; sourceTree = "<group>"; };
 		F3CEBDFF207D7FF6004C0E95 /* RouteMidTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteMidTableViewCell.swift; sourceTree = "<group>"; };
@@ -681,6 +683,7 @@
 				CCCC19DA21841B23008F636A /* HeatMapVC.swift */,
 				CCCC19DC21841CC0008F636A /* HeatMapCell.swift */,
 				CCCC19DD21841CC0008F636A /* HeatMapCell.xib */,
+				CCCC19E021845549008F636A /* HeatMapFiltersVC.swift */,
 			);
 			path = HeatMap;
 			sourceTree = "<group>";
@@ -960,6 +963,7 @@
 				4E505D491DD05A65004AC6C9 /* ConvenienceMethods.swift in Sources */,
 				94BCFD2E2072B4280021A887 /* NotesViewController.swift in Sources */,
 				4E06A05A1E5E9DE8007B946F /* ListMenuItem.swift in Sources */,
+				CCCC19E121845549008F636A /* HeatMapFiltersVC.swift in Sources */,
 				4E4EC14B1E5118C9000C63ED /* Favorable.swift in Sources */,
 				55D9A4BD208448DD0040110C /* UIImageExtension.swift in Sources */,
 				4E62CFE71DD87CFB00B19722 /* UINavigationBar+Extension.swift in Sources */,

@@ -52,6 +52,8 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
 
         libTitle.bringSubview(toFront: libraryImage)
         
+        self.pageTabBarController?.pageTabBar.height = 0
+        
         libTitle.text = library.name
         libTitle.lineBreakMode = NSLineBreakMode.byWordWrapping
         libTitle.numberOfLines = 0

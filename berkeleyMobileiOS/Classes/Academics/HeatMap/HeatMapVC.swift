@@ -14,6 +14,7 @@ class HeatMapVC: UIViewController {
     @IBOutlet weak var heatMap: GMSMapView!
     var libraries = [Library]()
     var occupancies = [String : (load: Int, capacity: Int)]() // Percentages
+    var filters = [LibraryAttributes]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,18 @@ class HeatMapVC: UIViewController {
         heatMap.camera = camera
         heatMap.isMyLocationEnabled = true
         placeMarkers()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filters"), style: .plain, target: self, action: #selector(openFilters))
+        
+        filters.append(contentsOf: [
+            LibraryAttributes.food(""),
+            LibraryAttributes.noise(""),
+            LibraryAttributes.nap(""),
+            LibraryAttributes.room(""),
+        ])
+        ["laptops", "projectors", "printers", "photocopiers"].forEach {
+            filters.append(.utility($0))
+        }
     }
     
     func placeMarkers() {
@@ -29,17 +42,22 @@ class HeatMapVC: UIViewController {
             let lat = lib.latitude!
             let lon = lib.longitude!
             let marker = GMSMarker()
-            marker.opacity = 0.6
-            marker.isFlat = true
             let code = libraryCodes[lib.name] ?? ""
-            if !lib.isOpen {
+            
+            // Method borrowed from original source file
+            
+            let hours = AcademicViewController.getLibraryHours(library: lib)
+            var splitStr = hours.components(separatedBy: " to ")
+            
+            if !lib.isOpen && (splitStr.count == 2 && splitStr[0] != splitStr[1]) {
                 marker.icon = UIImage(named: "heat_marker_gray")
+                print(hours)
             } else if let libdata = occupancies[code] {
                 let occupancy = Double(libdata.load) / Double(libdata.capacity)
                 let markerIcon = heatIcon(percentage: occupancy)
                 marker.icon = markerIcon
             } else {
-                marker.icon = GMSMarker.markerImage(with: bmThemeColor)
+                marker.icon = UIImage(named: "heat_marker_blue")
             }
             marker.position = CLLocationCoordinate2D(latitude: lat, longitude: lon)
             marker.title = lib.name
@@ -58,15 +76,17 @@ class HeatMapVC: UIViewController {
             return UIImage(named: "heat_marker_red")!
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    @objc func openFilters() {
+        self.performSegue(withIdentifier: "showFilters", sender: self)
     }
-    */
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showFilters" {
+            let vc = segue.destination as! HeatMapFiltersVC
+            vc.filters = self.filters
+            vc.parentVC = self
+        }
+    }
 
 }

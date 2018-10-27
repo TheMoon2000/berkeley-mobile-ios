@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-fileprivate let kLibrariesEndpoint = secretKAPIURL + "/weekly_libraries"
+fileprivate let kLibrariesEndpoint = sensorDataSource + "/libraries.php"
 
 class LibraryDataSource: ResourceDataSource {
     
@@ -52,7 +52,31 @@ class LibraryDataSource: ResourceDataSource {
         let weeklyClosingTimes  = json["weekly_closing_times"].map { (_, child) in formatter.date(from: child.string ?? "") }
         let weeklyByAppointment = json["weekly_by_appointment"].map { (_, child) in child.bool ?? false }
         
-        let library = Library(name: json["name"].stringValue, campusLocation: json["campus_location"].string, phoneNumber: json["phone_number"].string, weeklyOpeningTimes: weeklyOpeningTimes, weeklyClosingTimes: weeklyClosingTimes, weeklyByAppointment: weeklyByAppointment, imageLink: json["image_link"].string, latitude: json["latitude"].double, longitude: json["longitude"].double)
+        var utilities_to_add = [String]()
+        
+        var attributes = json["attributes"].map { (_, child) -> LibraryAttributes in
+            let msg = child.string!.components(separatedBy: ": ").last!
+            switch child.string! {
+            case "food":
+                return LibraryAttributes.food(msg)
+            case "room":
+                return LibraryAttributes.room(msg)
+            case "nap":
+                return LibraryAttributes.nap(msg)
+            case "noise":
+                return LibraryAttributes.noise(msg)
+            default:
+                utilities_to_add = child.string!.components(separatedBy: ": ")[1].components(separatedBy: ", ")
+                return LibraryAttributes.utility(utilities_to_add.popLast()!)
+            }
+        }
+        
+        for util in utilities_to_add {
+            attributes.append(.utility(util))
+        }
+        
+        
+        let library = Library(name: json["name"].stringValue, campusLocation: json["campus_location"].string, phoneNumber: json["phone_number"].string, weeklyOpeningTimes: weeklyOpeningTimes, weeklyClosingTimes: weeklyClosingTimes, weeklyByAppointment: weeklyByAppointment, imageLink: json["image_link"].string, latitude: json["latitude"].double, longitude: json["longitude"].double, attributes: attributes)
         
         FavoriteStore.shared.restoreState(for: library)
         

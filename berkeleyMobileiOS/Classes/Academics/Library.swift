@@ -30,10 +30,12 @@ class Library: Resource {
     var weeklyOpeningTimes:[Date?]
     var weeklyClosingTimes:[Date?]
     var weeklyByAppointment:[Bool]
+    var attributes = [LibraryAttributes]()
+    
     let latitude: Double?
     let longitude: Double?
     
-    init(name: String, campusLocation: String?, phoneNumber: String?, weeklyOpeningTimes:[Date?], weeklyClosingTimes:[Date?], weeklyByAppointment:[Bool], imageLink: String?, latitude: Double?, longitude: Double?) {
+    init(name: String, campusLocation: String?, phoneNumber: String?, weeklyOpeningTimes:[Date?], weeklyClosingTimes:[Date?], weeklyByAppointment:[Bool], imageLink: String?, latitude: Double?, longitude: Double?, attributes: [LibraryAttributes]) {
         self.campusLocation = campusLocation
         self.phoneNumber = phoneNumber
         self.weeklyOpeningTimes = weeklyOpeningTimes
@@ -44,6 +46,8 @@ class Library: Resource {
         
         self.name = name
         self.imageURL = URL(string: imageLink ?? "")
+        
+        self.attributes = attributes
     }
     
     var isOpen: Bool {

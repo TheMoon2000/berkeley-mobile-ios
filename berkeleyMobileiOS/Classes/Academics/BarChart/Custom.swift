@@ -384,3 +384,27 @@ let libraryCodes = [
     "Public Health Library": "PUBL",
     "Social Research Library": "SOCR",
 ]
+
+enum LibraryAttributes: CustomStringConvertible {
+    
+    var description: String {
+        switch self {
+        case .food(let msg):
+            return "food: " + msg
+        case .nap(let msg):
+            return "nap: " + msg
+        case .noise(let msg):
+            return "noise: " + msg
+        case .room(let msg):
+            return "room: " + msg
+        case .utility(let util):
+            return "utility: " + util
+        }
+    }
+    
+    case food(String)
+    case nap(String)
+    case noise(String)
+    case room(String)
+    case utility(String)
+}

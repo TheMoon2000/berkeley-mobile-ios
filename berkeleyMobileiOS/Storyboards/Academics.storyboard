@@ -418,10 +418,10 @@
             </objects>
             <point key="canvasLocation" x="2304.8000000000002" y="-723.68815592203907"/>
         </scene>
-        <!--Heat MapVC-->
+        <!--Campus Map-->
         <scene sceneID="rBa-mw-use">
             <objects>
-                <viewController id="sWq-i2-y5p" customClass="HeatMapVC" customModule="berkeleyMobileiOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Campus Map" hidesBottomBarWhenPushed="YES" id="sWq-i2-y5p" customClass="HeatMapVC" customModule="berkeleyMobileiOS" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jGC-su-ywA"/>
                         <viewControllerLayoutGuide type="bottom" id="EPA-hv-3mp"/>
@@ -440,11 +440,63 @@
                     </view>
                     <connections>
                         <outlet property="heatMap" destination="GwC-0a-DqN" id="rWT-Wb-lUf"/>
+                        <segue destination="sW0-12-JAq" kind="show" identifier="showFilters" id="8Mc-oR-hLR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UEA-SV-PWc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3560.8000000000002" y="-1425.3373313343329"/>
+        </scene>
+        <!--Filters-->
+        <scene sceneID="Cx4-cu-mUj">
+            <objects>
+                <viewController title="Filters" hidesBottomBarWhenPushed="YES" id="sW0-12-JAq" customClass="HeatMapFiltersVC" customModule="berkeleyMobileiOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Aff-6z-7MX"/>
+                        <viewControllerLayoutGuide type="bottom" id="W6z-v1-wzF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Qjg-Ly-Kgm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="7FW-fr-639">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="basicSwitch" textLabel="nex-O4-1rv" rowHeight="60" style="IBUITableViewCellStyleDefault" id="Nm2-JS-ThR">
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Nm2-JS-ThR" id="CIR-nV-RjN">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nex-O4-1rv">
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="59.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="sW0-12-JAq" id="F1j-YM-XhZ"/>
+                                    <outlet property="delegate" destination="sW0-12-JAq" id="ltE-Wf-o6D"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <connections>
+                        <outlet property="filterTable" destination="7FW-fr-639" id="X9G-n0-iyT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0gJ-19-tSz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4356" y="-1425.3373313343329"/>
         </scene>
         <!--Library Info-->
         <scene sceneID="9d3-be-Fdz">

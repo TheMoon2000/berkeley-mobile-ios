@@ -10,5 +10,7 @@ import Foundation
 
 let secretKAPIURL = "https://berkeleymobile-sandbox.herokuapp.com/api"
 
-let secretAPIKEY = "INSERT YOUR GOOGLE API KEY HERE"
+let sensorDataSource = "https://www.ocf.berkeley.edu/~jerryshan"
+
+let secretAPIKEY = "API KEY HERE"
 

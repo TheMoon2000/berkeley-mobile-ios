@@ -32,12 +32,12 @@ class HeatMapVC: UIViewController {
             marker.opacity = 0.6
             marker.isFlat = true
             let code = libraryCodes[lib.name] ?? ""
-            if let libdata = occupancies[code] {
+            if !lib.isOpen {
+                marker.icon = UIImage(named: "heat_marker_gray")
+            } else if let libdata = occupancies[code] {
                 let occupancy = Double(libdata.load) / Double(libdata.capacity)
                 let markerIcon = heatIcon(percentage: occupancy)
                 marker.icon = markerIcon
-            } else if !lib.isOpen {
-                marker.icon = UIImage(named: "heat_marker_gray")
             } else {
                 marker.icon = GMSMarker.markerImage(with: bmThemeColor)
             }

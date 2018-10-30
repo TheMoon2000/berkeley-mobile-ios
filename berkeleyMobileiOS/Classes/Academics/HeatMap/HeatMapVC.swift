@@ -15,14 +15,34 @@ class HeatMapVC: UIViewController {
     var libraries = [Library]()
     var occupancies = [String : (load: Int, capacity: Int)]() // Percentages
     var filters = [LibraryAttributes]()
+    var enableFilters = false {
+        didSet {
+            if let fmv = filterMessageView, let fm = filterMessage {
+                fmv.isHidden = !enableFilters
+            }
+        }
+    }
     
+    @IBOutlet weak var filterMessageView: UIVisualEffectView!
+    @IBOutlet weak var filterMessage: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        
+        if self.pageTabBarController?.pageTabBar.height == 60 {
+            self.pageTabBarController?.pageTabBar.height = 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                self.view.frame.size.height += 60
+                
+//                self.view.layoutSubviews()
+            }
+        }
+        
         let camera = GMSCameraPosition.camera(withLatitude: 37.871853, longitude: -122.258423, zoom: 15)
         heatMap.camera = camera
         heatMap.isMyLocationEnabled = true
-        placeMarkers()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filters"), style: .plain, target: self, action: #selector(openFilters))
         
@@ -32,13 +52,43 @@ class HeatMapVC: UIViewController {
             LibraryAttributes.nap(""),
             LibraryAttributes.room(""),
         ])
-        ["laptops", "projectors", "printers", "photocopiers"].forEach {
-            filters.append(.utility($0))
+        HeatMapFiltersVC.utilities.forEach {
+            filters.append(.utility($0.lowercased()))
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if self.pageTabBarController!.pageTabBar.height == 60 {
+            self.pageTabBarController?.pageTabBar.height = 0
+        }
+        placeMarkers()
+    }
+    
+    var filteredLibraries: [Library] {
+
+        let filter_as_string = filters.map {$0.description}
+        
+        return libraries.filter { (lib) -> Bool in
+            for attr in lib.attributes {
+                let type = attr.description
+                if !type.hasPrefix("utility") {
+                    if filter_as_string.contains(type) {return true}
+                } else {
+                    if filter_as_string.contains(type) {return true}
+                }
+            }
+            return false
         }
     }
     
     func placeMarkers() {
-        for lib in libraries {
+        
+        heatMap.clear()
+        if enableFilters {
+            filterMessage.text = "\(filteredLibraries.count) of \(libraries.count) libraries displayed."
+        }
+        
+        for lib in (enableFilters ? filteredLibraries : libraries) {
             let lat = lib.latitude!
             let lon = lib.longitude!
             let marker = GMSMarker()
@@ -47,11 +97,9 @@ class HeatMapVC: UIViewController {
             // Method borrowed from original source file
             
             let hours = AcademicViewController.getLibraryHours(library: lib)
-            var splitStr = hours.components(separatedBy: " to ")
             
-            if !lib.isOpen && (splitStr.count == 2 && splitStr[0] != splitStr[1]) {
+            if !AcademicViewController.libraryIsOpen(timeInterval: hours) {
                 marker.icon = UIImage(named: "heat_marker_gray")
-                print(hours)
             } else if let libdata = occupancies[code] {
                 let occupancy = Double(libdata.load) / Double(libdata.capacity)
                 let markerIcon = heatIcon(percentage: occupancy)
@@ -86,6 +134,7 @@ class HeatMapVC: UIViewController {
             let vc = segue.destination as! HeatMapFiltersVC
             vc.filters = self.filters
             vc.parentVC = self
+            vc.enableFilters = self.enableFilters
         }
     }
 

@@ -32,6 +32,11 @@ class CampusResourceViewController: UIViewController, CLLocationManagerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if self.pageTabBarController!.pageTabBar.height == 60 {
+            self.pageTabBarController?.pageTabBar.height = 0
+            self.loadView()
+        }
+        
         campResTitle.text = campusResource.name
         
         campResTableView.separatorStyle = .none

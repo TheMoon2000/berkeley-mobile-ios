@@ -680,9 +680,9 @@
 		CCCC19D921841B04008F636A /* HeatMap */ = {
 			isa = PBXGroup;
 			children = (
-				CCCC19DA21841B23008F636A /* HeatMapVC.swift */,
 				CCCC19DC21841CC0008F636A /* HeatMapCell.swift */,
 				CCCC19DD21841CC0008F636A /* HeatMapCell.xib */,
+				CCCC19DA21841B23008F636A /* HeatMapVC.swift */,
 				CCCC19E021845549008F636A /* HeatMapFiltersVC.swift */,
 			);
 			path = HeatMap;

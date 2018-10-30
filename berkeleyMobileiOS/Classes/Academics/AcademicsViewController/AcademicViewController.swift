@@ -87,9 +87,8 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 
                 self.libraries = (nonEmptyList as! [Library]).sorted(by: {$0.0.name < $0.1.name}) // Libraries should be sorted in alphabetical order
                 if let t = self.resourceTableView {
-                    self.spinner.isHidden = true
-                    t.isHidden = false
                     if self.occupancies.count > 0 {
+                        self.spinner.isHidden = true
                         t.reloadData()
                     }
                 }
@@ -106,9 +105,8 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 
                 self.campusResources = nonEmptyList as! [CampusResource]
                 if let t = self.resourceTableView {
-                    self.spinner.isHidden = true
-                    t.isHidden = false
                     if self.occupancies.count > 0 {
+                        self.spinner.isHidden = true
                         t.reloadData()
                     }
                 }
@@ -193,9 +191,6 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 self.occupancies = libs.mapValues({ (j) -> (Int, Int) in
                     (j.array![0].int!, j.array![1].int!)
                 })
-                DispatchQueue.main.async {
-                    self.resourceTableView.isHidden = false
-                }
             } else {
             }
             DispatchQueue.main.async {
@@ -209,6 +204,8 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        
+        self.pageTabBarController?.pageTabBar.height = 60
         
         let nib = UINib(nibName: "HeatMapCell", bundle: Bundle.main)
         resourceTableView.register(nib, forCellReuseIdentifier: "heat map")
@@ -267,28 +264,30 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 cell.resourceLoad.capacity = 500
             }
             
+            /*
             var status = "OPEN"
             if library.isOpen == false {
                 status = "CLOSED"
             }
             cell.resourceStatus.text = status
+ */
 
-            if (status == "OPEN") {
-                cell.resourceStatus.textColor = UIColor(hex: "18A408")
-            } else {
-                cell.resourceStatus.textColor = UIColor(hex: "FF2828")
-            }
+//            if (status == "OPEN") {
+//                cell.resourceStatus.textColor = UIColor(hex: "18A408")
+//            } else {
+//                cell.resourceStatus.textColor = UIColor(hex: "FF2828")
+//            }
             
             let hours = AcademicViewController.getLibraryHours(library: library)
             cell.resourceHours.text = hours
             cell.resourceHours.textColor = UIColor(hex: "585858")
             
-            var splitStr = hours.components(separatedBy: " to ")
-            if (splitStr.count == 2) {
-                if (splitStr[0] == splitStr[1]) {
-                    cell.resourceStatus.textColor = UIColor(hex: "18A408")
-                    cell.resourceStatus.text = "OPEN"
-                }
+            if AcademicViewController.libraryIsOpen(timeInterval: hours) {
+                cell.resourceStatus.textColor = UIColor(hex: "18A408")
+                cell.resourceStatus.text = "OPEN"
+            } else {
+                cell.resourceStatus.textColor = UIColor(hex: "FF2828")
+                cell.resourceStatus.text = "CLOSED"
             }
             
             return cell
@@ -329,7 +328,8 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (isLibrary == true) {
-            return libraries.count + 1
+            tableView.isHidden = libraries.count == 0
+            return libraries.count > 0 ? libraries.count + 1 : 0
         } else {
             return campusResources.count
         }
@@ -341,17 +341,39 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 self.performSegue(withIdentifier: "toHeatMap", sender: self)
                 self.resourceTableView.deselectRow(at: indexPath, animated: true)
             } else {
-                self.performSegue(withIdentifier: "toLibraryDetail", sender: indexPath.row)
+                self.performSegue(withIdentifier: "toLibraryDetail", sender: indexPath.row - 1)
                 self.resourceTableView.deselectRow(at: indexPath, animated: true)
             }
         } else {
-            self.performSegue(withIdentifier: "toCampusResourceDetail", sender: indexPath.row)
+            self.performSegue(withIdentifier: "toCampusResourceDetail", sender: indexPath.row - 1)
             self.resourceTableView.deselectRow(at: indexPath, animated: true)
         }
 
     }
     
+    static func libraryIsOpen(timeInterval: String) -> Bool {
+        var splitStr = timeInterval.components(separatedBy: " to ")
+        
+        if splitStr.count == 2 {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US")
+            formatter.dateFormat = "h:mm a"
+            
+            let openingTime = formatter.date(from: splitStr[0])!
+            let closingTime = formatter.date(from: splitStr[1])!
+            let dateTime = formatter.date(from: formatter.string(from: Date()))!
+            
+            if dateTime.timeIntervalSince(openingTime) > 0 && dateTime.timeIntervalSince(closingTime) < 0 || splitStr.count == 2 && splitStr[0] == splitStr[1] {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
     
+    /*
     func getLibraryStatus(library: Library) -> String {
         
         //Determining Status of library
@@ -361,13 +383,13 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
             return "Closed"
         }
         
-        var status = "Open"
+        var status = "OPEN"
         if (library.weeklyClosingTimes[0]!.compare(todayDate as Date) == .orderedAscending) {
             status = "Closed"
         }
         
         return status
-    }
+    }*/
     
     public static func getLibraryHours(library: Library) -> String{
         let dateFormatter = DateFormatter()
@@ -397,7 +419,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
 
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+                
         if (segue.identifier == "toLibraryDetail") {
             let selectedIndex = sender as! Int
             let selectedLibrary = self.libraries[selectedIndex]
@@ -405,6 +427,10 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
             let libraryDetailVC = segue.destination as! LibraryViewController
 
             libraryDetailVC.library = selectedLibrary
+            
+            if let code = libraryCodes[selectedLibrary.name] {
+                libraryDetailVC.capacity = occupancies[code]?.capacity ?? 0
+            }
 
         }
         if (segue.identifier == "toCampusResourceDetail") {
@@ -417,7 +443,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         }
         if (segue.identifier == "toHeatMap") {
             let vc = segue.destination as! HeatMapVC
-            vc.libraries = self.libraries
+            vc.libraries = self.libraries.filter({!buildingExceptionList.contains($0.name)})
             vc.occupancies = self.occupancies
         }
 

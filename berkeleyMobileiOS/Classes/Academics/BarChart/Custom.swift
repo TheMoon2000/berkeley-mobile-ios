@@ -376,7 +376,6 @@ let libraryCodes = [
     "Main (Gardner) Stacks": "DOE-STACKS",
     "Mathematics Statistics Library": "MATH",
     "Moffitt Library": "MOFF",
-    "Moffitt Library 4th Floor": "MOFF-4",
     "Morrison Library": "MORR",
     "Music Library": "MUSI",
     "Optometry and Health Sciences Library": "OPTO",
@@ -389,14 +388,14 @@ enum LibraryAttributes: CustomStringConvertible {
     
     var description: String {
         switch self {
-        case .food(let msg):
-            return "food: " + msg
-        case .nap(let msg):
-            return "nap: " + msg
-        case .noise(let msg):
-            return "noise: " + msg
-        case .room(let msg):
-            return "room: " + msg
+        case .food:
+            return "food"
+        case .nap:
+            return "nap"
+        case .noise:
+            return "noise"
+        case .room:
+            return "room"
         case .utility(let util):
             return "utility: " + util
         }
@@ -408,3 +407,10 @@ enum LibraryAttributes: CustomStringConvertible {
     case room(String)
     case utility(String)
 }
+
+let buildingExceptionList = [
+    "Copy Center",
+    "Interlibrary Services",
+    "Privileges Desk",
+    "Mark Twain Papers & Project"
+]

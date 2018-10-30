@@ -249,7 +249,7 @@
                                     <action selector="resourceModeSelected:" destination="adv-ic-IZc" eventType="touchUpInside" id="vGe-H2-ohv"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Q2k-Dw-j7I">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="70" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Q2k-Dw-j7I">
                                 <rect key="frame" x="0.0" y="132" width="375" height="535"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -430,15 +430,44 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GwC-0a-DqN" customClass="GMSMapView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GwC-0a-DqN" customClass="GMSMapView">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xIv-BE-Po4">
+                                <rect key="frame" x="0.0" y="617" width="375" height="50"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="4Ns-EM-0SF">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20 / 25 libraries displayed." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWA-XU-Wex">
+                                            <rect key="frame" x="81.5" y="14.5" width="212.5" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="6VI-wK-Ajl"/>
+                                    <constraint firstItem="kWA-XU-Wex" firstAttribute="centerX" secondItem="xIv-BE-Po4" secondAttribute="centerX" id="6vw-9t-GUa"/>
+                                    <constraint firstItem="kWA-XU-Wex" firstAttribute="centerY" secondItem="xIv-BE-Po4" secondAttribute="centerY" id="ndV-pH-Nbp"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="GwC-0a-DqN" secondAttribute="trailing" id="8lO-Ql-KxV"/>
+                            <constraint firstItem="GwC-0a-DqN" firstAttribute="leading" secondItem="hIC-8i-Hlt" secondAttribute="leading" id="LFD-6V-5em"/>
+                            <constraint firstItem="xIv-BE-Po4" firstAttribute="leading" secondItem="hIC-8i-Hlt" secondAttribute="leading" id="LhL-lE-ru5"/>
+                            <constraint firstAttribute="trailing" secondItem="xIv-BE-Po4" secondAttribute="trailing" id="cVJ-Lq-rOl"/>
+                            <constraint firstItem="EPA-hv-3mp" firstAttribute="top" secondItem="GwC-0a-DqN" secondAttribute="bottom" id="hTE-jR-gce"/>
+                            <constraint firstItem="EPA-hv-3mp" firstAttribute="top" secondItem="xIv-BE-Po4" secondAttribute="bottom" id="vdY-ab-rHW"/>
+                            <constraint firstItem="GwC-0a-DqN" firstAttribute="top" secondItem="jGC-su-ywA" secondAttribute="bottom" id="x9s-97-lgg"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="filterMessage" destination="kWA-XU-Wex" id="3pr-Bn-iEa"/>
+                        <outlet property="filterMessageView" destination="xIv-BE-Po4" id="REQ-m5-Ssg"/>
                         <outlet property="heatMap" destination="GwC-0a-DqN" id="rWT-Wb-lUf"/>
                         <segue destination="sW0-12-JAq" kind="show" identifier="showFilters" id="8Mc-oR-hLR"/>
                     </connections>

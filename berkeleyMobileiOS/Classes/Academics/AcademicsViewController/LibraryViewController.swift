@@ -17,6 +17,7 @@ let kSensorDataEndpoint = sensorDataSource + "/data.php"
 class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate {
     
     var library: Library!
+    var capacity = 0
     var locationManager = CLLocationManager()
     var iconImages = [UIImage]()
     var libInfo = [String]()
@@ -52,7 +53,10 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
 
         libTitle.bringSubview(toFront: libraryImage)
         
-        self.pageTabBarController?.pageTabBar.height = 0
+        if self.pageTabBarController!.pageTabBar.height == 60 {
+            self.pageTabBarController?.pageTabBar.height = 0
+            self.loadView()
+        }
         
         libTitle.text = library.name
         libTitle.lineBreakMode = NSLineBreakMode.byWordWrapping
@@ -164,9 +168,15 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if self.pageTabBarController!.pageTabBar.height == 60 {
+            self.pageTabBarController?.pageTabBar.height = 0
+        }
+    }
+    
     func updateBarChartCell() {
         
-      DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.libTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .fade)
         }
     }
@@ -178,6 +188,8 @@ class LibraryViewController: UIViewController, GMSMapViewDelegate, CLLocationMan
         // Update the appearance of the barchart cell
         distribution = nil; failureType = nil
         
+        self.libTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .fade)
+
         var request = URLRequest(url: URL(string: kSensorDataEndpoint)!)
         request.httpMethod = "POST"
         let post_string = "date=\(date)&library=\(library)"
@@ -388,7 +400,8 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
         case 0:
             let cell = libTableView.dequeueReusableCell(withIdentifier: "dropdown", for: indexPath) as! WeeklyTimesTableViewCell
             cell.icon.image = iconImages[indexPath.row]
-            if self.library.isOpen {
+            let hour = AcademicViewController.getLibraryHours(library: library)
+            if AcademicViewController.libraryIsOpen(timeInterval: hour) {
                 cell.day.text = "Open"
                 cell.day.textColor = kColorGreen
             } else {
@@ -434,7 +447,7 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
                 cell.barChart.frameStyle = .bottom(1)
                 cell.barChart.backgroundColor = UIColor.white
                 cell.barChart.chartTheme = bmThemeColor
-                cell.barChart.maxCapacity = 300 // Temporary solution
+                cell.barChart.maxCapacity = CGFloat(self.capacity) // Temporary solution
                 cell.barChart.data = dist.1
                 cell.barChart.gradient = true
                 let dayOfWeek = weekFormatter.string(from: dist.0)
@@ -484,7 +497,6 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
             tableView.reloadData()
         case 3:
             if failureType != nil {
-                tableView.deselectRow(at: indexPath, animated: true)
                 loadDistribution(libraryCodes[library.name]!, popularityDateFormatter.string(from: Date())) { (date, list) in
                     self.distribution = (date, list)
                     self.updateBarChartCell()

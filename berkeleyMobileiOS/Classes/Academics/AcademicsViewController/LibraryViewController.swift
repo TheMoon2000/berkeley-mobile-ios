@@ -467,7 +467,7 @@ extension LibraryViewController: UITableViewDataSource, UITableViewDelegate {
                     cell.errorMessage.text = "Sorry, we couldn't connect to our server. Tap to retry!"
                 case .unavailable:
                     cell.errorImage.image = UIImage(named: "unavailable")
-                    cell.errorMessage.text = "Sorry, sensor data is not yet available for this building!"
+                    cell.errorMessage.text = "Sorry, sensor data is not available for this building!"
                 case .customMessage(let message):
                     cell.errorImage.image = UIImage(named: "connection-error")
                     cell.errorMessage.text = message

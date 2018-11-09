@@ -160,6 +160,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
         
         // Setup refresh control
         resourceTableView.refreshControl = refreshControl
+        print(refreshControl.frame.origin.y)
         refreshControl.addTarget(self, action: #selector(refreshOccupancyData(_:)), for: .valueChanged)
         refreshControl.attributedTitle = NSMutableAttributedString(string: "Fetching Library Data...", attributes: [NSForegroundColorAttributeName: bmThemeColor])
         refreshControl.isEnabled = false
@@ -345,7 +346,7 @@ class AcademicViewController: UIViewController, UITableViewDelegate, UITableView
                 self.resourceTableView.deselectRow(at: indexPath, animated: true)
             }
         } else {
-            self.performSegue(withIdentifier: "toCampusResourceDetail", sender: indexPath.row - 1)
+            self.performSegue(withIdentifier: "toCampusResourceDetail", sender: indexPath.row)
             self.resourceTableView.deselectRow(at: indexPath, animated: true)
         }
 
